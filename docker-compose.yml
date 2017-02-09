@@ -1,8 +1,6 @@
 version: '2'
 services:
   web:
-    env_file:
-     - conf/development.env
     build: .
     image: cabot:web
     command: python manage.py runserver 0.0.0.0:5001
@@ -15,8 +13,6 @@ services:
      - db
 
   worker:
-    env_file:
-     - conf/development.env
     image: cabot:web
     command: python manage.py celery worker -A cabot --loglevel=DEBUG --concurrency=16 -Ofair
     volumes:
@@ -26,8 +22,6 @@ services:
      - db
 
   beat:
-    env_file:
-     - conf/development.env
     image: cabot:web
     command: python manage.py celery beat -A cabot --loglevel=DEBUG
     volumes:
