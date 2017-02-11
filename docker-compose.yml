@@ -1,14 +1,11 @@
 version: '2'
 services:
-  base:
+  web:
     extends:
       file: docker-compose-base.yml
       service: base
     env_file:
-        - conf/development.env
-
-  web:
-    extends: base
+      - conf/development.env
     environment:
       - CABOT_SUPERUSER_USERNAME=admin
       - CABOT_SUPERUSER_PASSWORD=pass
@@ -20,19 +17,29 @@ services:
       - db
 
   worker:
-    extends: base
+    extends:
+      file: docker-compose-base.yml
+      service: base
+    env_file:
+      - conf/development.env
     command: python manage.py celery worker -A cabot --loglevel=DEBUG --concurrency=16 -Ofair
     environment:
       - SKIP_INIT=1
+      - WAIT_FOR_MIGRATIONS=1
     links:
       - redis
       - db
 
   beat:
-    extends: base
+    extends:
+      file: docker-compose-base.yml
+      service: base
+    env_file:
+      - conf/development.env
     command: python manage.py celery beat -A cabot --loglevel=DEBUG
     environment:
       - SKIP_INIT=1
+      - WAIT_FOR_MIGRATIONS=1
     links:
       - redis
       - db
