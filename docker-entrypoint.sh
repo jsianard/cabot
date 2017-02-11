@@ -2,13 +2,6 @@
 set -e
 set -o allexport
 
-# Backup current env
-env > /tmp/environment.env
-# Load defaults
-source /code/conf/default.env
-# Restore existing variables
-source /tmp/environment.env
-
 function wait_for_broker {(
   set +e
   for try in {1..60} ;  do
